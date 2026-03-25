@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Subtracker - ' + ${suscripcion.nombreServicio}">Subtracker - Detalle</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/suscripcion-detalle.css}">
+</head>
+<body>
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <nav class="sidebar" style="width: 250px;">
+        <div class="text-center mb-4 pt-3">
+            <img th:src="@{/images/logoSub.png}" alt="Subtracker Logo" class="img-fluid" style="max-width: 100px;">
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/suscripciones/nueva}">
+                    <i class="bi bi-plus-circle"></i> Nueva Suscripción
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/dashboard}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/suscripciones}">
+                    <i class="bi bi-list-ul"></i> Mis Suscripciones
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/proximos-pagos}">
+                    <i class="bi bi-calendar-event"></i> Próximos Pagos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/facturas}">
+                    <i class="bi bi-receipt"></i> Facturas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/reportes}">
+                    <i class="bi bi-graph-up-arrow"></i> Reportes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/configuracion}">
+                    <i class="bi bi-gear"></i> Configuración
+                </a>
+            </li>
+        </ul>
+        <div class="mt-auto pt-4 px-3" th:if="${usuario != null}">
+            <div class="text-muted small">
+                <i class="bi bi-person-circle me-1"></i>
+                <span th:text="${usuario.nombre}">Usuario</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1">
+
+        <!-- Top Navbar -->
+        <nav class="navbar-top">
+            <div class="container-fluid">
+                <span class="navbar-text">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    <span th:text="${#dates.format(#dates.createNow(), 'EEEE, d MMMM yyyy')}">lunes, 2 marzo 2026</span>
+                </span>
+                <div class="dropdown">
+                    <button class="profile-icon" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/perfil}"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+
+            <!-- Título + breadcrumb -->
+            <div class="mb-4 d-flex align-items-center gap-2">
+                <a th:href="@{/suscripciones}" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+                    <i class="bi bi-list-ul me-1"></i>Mis Suscripciones
+                </a>
+                <span class="text-muted">/</span>
+                <span class="fw-semibold" th:text="${suscripcion.nombreServicio}">Netflix</span>
+            </div>
+
+            <!-- Header principal -->
+            <div class="detalle-header"
+                 th:classappend="'estado-' + ${suscripcion.estado.name().toLowerCase()}">
+
+                <div class="detalle-icon"
+                     th:classappend="'icon-color-' + ${iconColor ?: 0}"
+                     th:text="${#strings.toUpperCase(#strings.substring(suscripcion.nombreServicio, 0, 1))}">N</div>
+
+                <div class="detalle-header-info">
+                    <h3 th:text="${suscripcion.nombreServicio}">Netflix</h3>
+                    <small th:text="${suscripcion.patronComercio}">NETFLIX INTERNATIONAL BV</small>
+                    <div class="mt-2">
+                        <span class="badge"
+                              th:classappend="${suscripcion.estado.name() == 'ACTIVA'} ? 'bg-success' :
+                                             (${suscripcion.estado.name() == 'POTENCIAL'} ? 'bg-warning text-dark' : 'bg-secondary')"
+                              th:text="${suscripcion.estado.name() == 'ACTIVA'} ? 'Activa' :
+                                        (${suscripcion.estado.name() == 'POTENCIAL'} ? 'Potencial' : 'Cancelada')">Activa</span>
+                    </div>
+                </div>
+
+                <div class="detalle-header-precio">
+                    <div class="precio">
+                        €<th:block th:text="${#numbers.formatDecimal(suscripcion.importe, 1, 2)}">9.99</th:block>
+                    </div>
+                    <span class="freq"
+                          th:text="${suscripcion.frecuencia.name() == 'MENSUAL'} ? '/mes' :
+                                    (${suscripcion.frecuencia.name() == 'ANUAL'} ? '/año' :
+                                    (${suscripcion.frecuencia.name() == 'TRIMESTRAL'} ? '/trimestre' :
+                                    (${suscripcion.frecuencia.name() == 'SEMESTRAL'} ? '/semestre' :
+                                    (${suscripcion.frecuencia.name() == 'BIMESTRAL'} ? '/2 meses' :
+                                    (${suscripcion.frecuencia.name() == 'CUATRIMESTRAL'} ? '/4 meses' : '')))))"></span>
+                    <span class="moneda" th:text="${suscripcion.moneda}">EUR</span>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-bar">
+                <a th:href="@{/suscripciones}" class="btn-accion btn-volver">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <a th:href="@{/suscripciones/{id}/editar(id=${suscripcion.id})}"
+                   class="btn-accion btn-editar">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+                <!-- Solo muestra "Cancelar suscripción" si está activa o potencial -->
+                <form th:if="${suscripcion.estado.name() != 'CANCELADA'}"
+                      th:action="@{/suscripciones/{id}/cancelar(id=${suscripcion.id})}"
+                      method="post"
+                      style="display:inline;">
+                    <button type="submit" class="btn-accion btn-cancelar"
+                            onclick="return confirm('¿Seguro que quieres marcar esta suscripción como cancelada?')">
+                        <i class="bi bi-x-circle"></i> Cancelar suscripción
+                    </button>
+                </form>
+            </div>
+
+            <!-- Grid de datos -->
+            <div class="info-grid">
+
+                <div class="info-card">
+                    <span class="info-icon text-primary"><i class="bi bi-arrow-repeat"></i></span>
+                    <label>Frecuencia</label>
+                    <span th:text="${suscripcion.frecuencia.name() == 'MENSUAL'} ? 'Mensual' :
+                                    (${suscripcion.frecuencia.name() == 'BIMESTRAL'} ? 'Bimestral' :
+                                    (${suscripcion.frecuencia.name() == 'TRIMESTRAL'} ? 'Trimestral' :
+                                    (${suscripcion.frecuencia.name() == 'CUATRIMESTRAL'} ? 'Cuatrimestral' :
+                                    (${suscripcion.frecuencia.name() == 'SEMESTRAL'} ? 'Semestral' :
+                                    (${suscripcion.frecuencia.name() == 'ANUAL'} ? 'Anual' : 'Desconocida')))))">Mensual</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon text-success"><i class="bi bi-calendar3"></i></span>
+                    <label>Fecha de inicio</label>
+                    <span th:text="${#temporals.format(suscripcion.fechaInicio, 'dd MMM yyyy')}">01 Ene 2025</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon text-warning"><i class="bi bi-calendar-check"></i></span>
+                    <label>Próximo pago</label>
+                    <span th:text="${suscripcion.proximaRenovacion != null} ?
+                                   ${#temporals.format(suscripcion.proximaRenovacion, 'dd MMM yyyy')} : '—'">01 Abr 2025</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon text-info"><i class="bi bi-clock-history"></i></span>
+                    <label>Fecha de creación</label>
+                    <span th:text="${suscripcion.fechaCreacion != null} ?
+                                   ${#temporals.format(suscripcion.fechaCreacion, 'dd MMM yyyy HH:mm')} : '—'">01 Ene 2025</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon text-secondary"><i class="bi bi-coin"></i></span>
+                    <label>Moneda</label>
+                    <span th:text="${suscripcion.moneda}">EUR</span>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon text-primary"><i class="bi bi-patch-check"></i></span>
+                    <label>Confianza de detección</label>
+                    <div class="confidence-bar">
+                        <div class="confidence-dot"
+                             th:classappend="${suscripcion.confianza.name() == 'MUY_BAJA' or suscripcion.confianza.name() == 'BAJA' or suscripcion.confianza.name() == 'MEDIA' or suscripcion.confianza.name() == 'ALTA' or suscripcion.confianza.name() == 'MUY_ALTA'} ? 'filled' : ''"></div>
+                        <div class="confidence-dot"
+                             th:classappend="${suscripcion.confianza.name() == 'BAJA' or suscripcion.confianza.name() == 'MEDIA' or suscripcion.confianza.name() == 'ALTA' or suscripcion.confianza.name() == 'MUY_ALTA'} ? 'filled' : ''"></div>
+                        <div class="confidence-dot"
+                             th:classappend="${suscripcion.confianza.name() == 'MEDIA' or suscripcion.confianza.name() == 'ALTA' or suscripcion.confianza.name() == 'MUY_ALTA'} ? 'filled' : ''"></div>
+                        <div class="confidence-dot"
+                             th:classappend="${suscripcion.confianza.name() == 'ALTA' or suscripcion.confianza.name() == 'MUY_ALTA'} ? 'filled' : ''"></div>
+                        <div class="confidence-dot"
+                             th:classappend="${suscripcion.confianza.name() == 'MUY_ALTA'} ? 'filled' : ''"></div>
+                    </div>
+                    <span style="font-size:0.8rem; color:#6c757d;"
+                          th:text="${suscripcion.confianza.name() == 'MUY_BAJA'} ? 'Muy baja' :
+                                    (${suscripcion.confianza.name() == 'BAJA'} ? 'Baja' :
+                                    (${suscripcion.confianza.name() == 'MEDIA'} ? 'Media' :
+                                    (${suscripcion.confianza.name() == 'ALTA'} ? 'Alta' : 'Muy alta')))">Media</span>
+                </div>
+
+                <!-- Gasto anual estimado -->
+                <div class="info-card"
+                     th:with="gastoAnual=${suscripcion.frecuencia.name() == 'MENSUAL'} ? ${suscripcion.importe * 12} :
+                                          (${suscripcion.frecuencia.name() == 'BIMESTRAL'} ? ${suscripcion.importe * 6} :
+                                          (${suscripcion.frecuencia.name() == 'TRIMESTRAL'} ? ${suscripcion.importe * 4} :
+                                          (${suscripcion.frecuencia.name() == 'CUATRIMESTRAL'} ? ${suscripcion.importe * 3} :
+                                          (${suscripcion.frecuencia.name() == 'SEMESTRAL'} ? ${suscripcion.importe * 2} :
+                                          ${suscripcion.importe}))))">
+                    <span class="info-icon" style="color:#007bff;"><i class="bi bi-piggy-bank"></i></span>
+                    <label>Gasto anual estimado</label>
+                    <span style="color:#007bff;"
+                          th:text="'€' + ${#numbers.formatDecimal(gastoAnual, 1, 2)}">€119.88</span>
+                </div>
+
+                <!-- Comercio si existe -->
+                <div class="info-card" th:if="${suscripcion.comercio != null}">
+                    <span class="info-icon text-secondary"><i class="bi bi-shop"></i></span>
+                    <label>Comercio</label>
+                    <span th:text="${suscripcion.comercio.nombre}">Netflix Inc.</span>
+                </div>
+
+            </div>
+
+            <!-- Historial de transacciones -->
+            <div class="detalle-section">
+                <div class="detalle-section-header">
+                    <h5><i class="bi bi-clock-history me-2 text-primary"></i>Transacciones detectadas</h5>
+                    <span class="badge bg-light text-muted"
+                          th:text="${transacciones != null} ? ${transacciones.size()} + ' transacciones' : '0 transacciones'">0 transacciones</span>
+                </div>
+                <div class="detalle-section-body">
+                    <table class="tx-table" th:if="${transacciones != null and !transacciones.empty}">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Importe</th>
+                                <th>Descripción</th>
+                                <th>ID externo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="relacion : ${transacciones}">
+                                <td>
+                                    <span th:text="${#temporals.format(relacion.transaccion.fechaTransaccion, 'dd MMM yyyy')}">12 Ene 2026</span>
+                                </td>
+                                <td>
+                                    <span class="tx-importe"
+                                          th:text="'−€' + ${#numbers.formatDecimal(relacion.transaccion.importe, 1, 2)}">−€9.99</span>
+                                    <span class="tx-descripcion" th:text="${relacion.transaccion.moneda}">EUR</span>
+                                </td>
+                                <td>
+                                    <span th:text="${relacion.transaccion.descripcion}">NETFLIX INTERNATIONAL BV</span>
+                                </td>
+                                <td>
+                                    <span class="tx-descripcion" th:text="${relacion.transaccion.idExterno}">TXN_001</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="tx-empty" th:if="${transacciones == null or transacciones.empty}">
+                        <i class="bi bi-receipt"></i>
+                        <p class="mb-0">No hay transacciones registradas para esta suscripción</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

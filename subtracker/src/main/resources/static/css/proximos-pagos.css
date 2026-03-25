@@ -1,0 +1,307 @@
+/* ========================================
+   proximos-pagos.css
+   ======================================== */
+
+/* ===== TIMELINE HEADER ===== */
+.pagos-header {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pagos-resumen {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.pagos-resumen-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pagos-resumen-item label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #adb5bd;
+    font-weight: 600;
+}
+
+.pagos-resumen-item span {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #333;
+}
+
+.pagos-resumen-item span.text-danger  { color: #dc3545 !important; }
+.pagos-resumen-item span.text-warning { color: #e6a817 !important; }
+.pagos-resumen-item span.text-success { color: #28a745 !important; }
+.pagos-resumen-item span.text-primary { color: #007bff !important; }
+
+/* ===== FILTRO DE PERÍODO ===== */
+.period-filter {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.period-btn {
+    border: 1.5px solid #e9ecef;
+    border-radius: 30px;
+    padding: 6px 18px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    background: white;
+    color: #6c757d;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.period-btn:hover {
+    background: #f0f4ff;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.period-btn.active {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+/* ===== GRUPO POR FECHA ===== */
+.date-group {
+    margin-bottom: 28px;
+}
+
+.date-group-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.date-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.date-label.hoy {
+    color: #007bff;
+}
+
+.date-label.pasado {
+    color: #dc3545;
+}
+
+.date-divider {
+    flex: 1;
+    height: 1px;
+    background: #e9ecef;
+}
+
+.date-total {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #adb5bd;
+    white-space: nowrap;
+}
+
+/* ===== FILA DE PAGO ===== */
+.pago-row {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+    text-decoration: none;
+    color: inherit;
+}
+
+.pago-row:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Urgencia por días restantes */
+.pago-row.urgente   { border-left-color: #dc3545; }
+.pago-row.proximo   { border-left-color: #ffc107; }
+.pago-row.normal    { border-left-color: #28a745; }
+.pago-row.vencido   { border-left-color: #6c757d; opacity: 0.7; }
+
+/* ===== ICONO DE SERVICIO ===== */
+.pago-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.icon-color-0 { background: #4361ee; }
+.icon-color-1 { background: #e63946; }
+.icon-color-2 { background: #2a9d8f; }
+.icon-color-3 { background: #e76f51; }
+.icon-color-4 { background: #8338ec; }
+.icon-color-5 { background: #06d6a0; }
+.icon-color-6 { background: #fb8500; }
+.icon-color-7 { background: #3a86ff; }
+.icon-color-8 { background: #d62828; }
+.icon-color-9 { background: #457b9d; }
+
+/* ===== INFO DEL PAGO ===== */
+.pago-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pago-info h6 {
+    margin: 0 0 2px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pago-info small {
+    color: #adb5bd;
+    font-size: 0.75rem;
+}
+
+/* ===== DÍAS RESTANTES ===== */
+.dias-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.dias-badge .dias-num {
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.dias-badge .dias-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 1px;
+}
+
+.dias-badge.urgente {
+    background: #fff5f5;
+    color: #dc3545;
+}
+
+.dias-badge.proximo {
+    background: #fffbf0;
+    color: #e6a817;
+}
+
+.dias-badge.normal {
+    background: #f0fff4;
+    color: #28a745;
+}
+
+.dias-badge.vencido {
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+/* ===== IMPORTE ===== */
+.pago-importe {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #007bff;
+    min-width: 80px;
+    text-align: right;
+}
+
+.pago-importe .moneda {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #adb5bd;
+    display: block;
+    text-align: right;
+}
+
+/* ===== FRECUENCIA BADGE ===== */
+.freq-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #f0f4ff;
+    color: #4361ee;
+    white-space: nowrap;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #adb5bd;
+}
+
+.empty-state i {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.35;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .pagos-resumen {
+        gap: 20px;
+    }
+
+    .pago-row {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .pago-importe {
+        min-width: auto;
+    }
+
+    .freq-badge {
+        display: none;
+    }
+}

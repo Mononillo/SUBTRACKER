@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subtracker - Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <!-- Tu theme.css personalizado -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar" style="width: 250px;">
+            <div class="text-center mb-4 pt-3">
+                <img th:src="@{/images/logoSub.png}"
+                     alt="Subtracker Logo"
+                     class="img-fluid"
+                     style="max-width: 100px;">
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/suscripciones/nueva}" th:classappend="${currentPage == 'nueva'} ? 'active' : ''">
+                        <i class="bi bi-plus-circle"></i> Nueva Suscripción
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/dashboard}" th:classappend="${currentPage == 'dashboard'} ? 'active' : ''">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/suscripciones}" th:classappend="${currentPage == 'lista'} ? 'active' : ''">
+                        <i class="bi bi-list-ul"></i> Mis Suscripciones
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proximos-pagos}" th:classappend="${currentPage == 'pagos'} ? 'active' : ''">
+                        <i class="bi bi-calendar-event"></i> Próximos Pagos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/facturas}" th:classappend="${currentPage == 'facturas'} ? 'active' : ''">
+                        <i class="bi bi-receipt"></i> Facturas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/reportes}" th:classappend="${currentPage == 'reportes'} ? 'active' : ''">
+                        <i class="bi bi-graph-up-arrow"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/configuracion}" th:classappend="${currentPage == 'config'} ? 'active' : ''">
+                        <i class="bi bi-gear"></i> Configuración
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Información del usuario en sidebar -->
+            <div class="mt-auto pt-4 px-3" th:if="${usuario != null}">
+                <div class="text-muted small">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${usuario.nombre}">Usuario</span>
+                </div>
+            </div>
+        </nav>
+        <!-- // Sidebar -->
+
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            <!-- Top Navbar -->
+            <nav class="navbar-top">
+				<div class="container-fluid d-flex justify-content-between align-items-center">
+	                    <span class="navbar-text">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        <span th:text="${#dates.format(#dates.createNow(), 'EEEE, d MMMM yyyy')}"></span>
+                    </span>
+                    <div class="dropdown">
+                        <button class="profile-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/perfil}">
+                                <i class="bi bi-person me-2"></i>Mi Perfil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" th:href="@{/logout}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- // Top Navbar -->
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <div class="mb-4 row">
+                    <div class="col-md-12">
+                        <h2 class="fw-bold" th:text="${titulo ?: 'Dashboard'}">Dashboard</h2>
+                        <p class="text-muted" th:text="${subtitulo ?: 'Resumen de tus suscripciones activas'}">
+                            Resumen de tus suscripciones activas
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mensajes de estado -->
+                
+
+                <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${mensajeError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="mb-4 row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card-subscription stats-card">
+                            <div class="card-body">
+                                <h6 class="card-title text-muted">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Suscripciones Activas
+                                </h6>
+                                <h3 class="fw-bold text-primary" th:text="${stats.activas}">8</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card-subscription stats-card">
+                            <div class="card-body">
+                                <h6 class="card-title text-muted">
+                                    <i class="bi bi-currency-euro text-success me-2"></i>
+                                    Gasto Mensual
+                                </h6>
+                                <h3 class="fw-bold text-success" th:text="|€${stats.gastoMensual}|"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card-subscription stats-card">
+                            <div class="card-body">
+                                <h6 class="card-title text-muted">
+                                    <i class="bi bi-hourglass-split text-warning me-2"></i>
+                                    Próximo Pago
+                                </h6>
+                                <h3 class="fw-bold text-warning" th:text="${stats.proximoPago}"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card-subscription stats-card">
+                            <div class="card-body">
+                                <h6 class="card-title text-muted">
+                                    <i class="bi bi-piggy-bank-fill text-info me-2"></i>
+                                    Gasto Anual Estimado
+                                </h6>
+                                <h3 class="fw-bold text-info" th:text="|€${stats.anual}|"></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- // Stats Cards -->
+
+                <!-- Recent Subscriptions -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-subscription">
+                            <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    Suscripciones Recientes
+                                </h5>
+                                <a th:href="@{/suscripciones}" class="btn btn-outline-primary btn-sm">
+                                    Ver todas <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr class="text-muted">
+                                                <th>Servicio</th>
+                                                <th>Precio</th>
+                                                <th>Ciclo</th>
+                                                <th>Próximo Pago</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Iterar sobre suscripciones -->
+                                            <tr th:each="sub : ${suscripciones}">
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span th:text="${sub.nombreServicio}"></span>
+                                                    </div>
+                                                </td>
+                                                <td th:text="|€${#numbers.formatDecimal(sub.importe, 1, 2)}|"></td>
+                                                <td>
+                                                    <!-- FRECUENCIAS COMPLETAS -->
+                                                    <span class="badge bg-success" th:if="${sub.frecuencia.name() == 'MENSUAL'}" th:text="'Mensual'">Mensual</span>
+                                                    <span class="badge bg-info" th:if="${sub.frecuencia.name() == 'BIMESTRAL'}" th:text="'Bimestral'">Bimestral</span>
+                                                    <span class="badge bg-primary" th:if="${sub.frecuencia.name() == 'TRIMESTRAL'}" th:text="'Trimestral'">Trimestral</span>
+                                                    <span class="badge bg-purple" th:if="${sub.frecuencia.name() == 'CUATRIMESTRAL'}" th:text="'Cuatrimestral'">Cuatrimestral</span>
+                                                    <span class="badge bg-warning" th:if="${sub.frecuencia.name() == 'SEMESTRAL'}" th:text="'Semestral'">Semestral</span>
+                                                    <span class="badge bg-warning" th:if="${sub.frecuencia.name() == 'ANUAL'}" th:text="'Anual'">Anual</span>
+                                                    <span class="badge bg-secondary" th:if="${sub.frecuencia.name() == 'DESCONOCIDA'}" th:text="'Desconocida'">Desconocida</span>
+                                                </td>
+                                                <td th:text="${#temporals.format(sub.proximaRenovacion, 'dd MMM yyyy')}"></td>
+                                                <td>
+                                                    <span class="badge bg-success" th:if="${sub.estado.name() == 'ACTIVA'}" th:text="${sub.estado}">Activa</span>
+                                                    <span class="badge bg-warning" th:if="${sub.estado.name() == 'POTENCIAL'}" th:text="${sub.estado}">Potencial</span>
+                                                    <span class="badge bg-secondary" th:if="${sub.estado.name() == 'CANCELADA'}" th:text="${sub.estado}">Cancelada</span>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-outline-primary btn-sm" 
+                                                       th:href="@{/suscripciones/{id}(id=${sub.id})}"
+                                                       role="button">
+                                                        <i class="bi bi-eye me-1"></i>Ver
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- Fila si no hay suscripciones -->
+                                            <tr th:if="${suscripciones == null or suscripciones.empty}">
+                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                    No hay suscripciones para mostrar
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    	
+</body>
+</html>
