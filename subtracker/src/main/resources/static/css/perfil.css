@@ -1,0 +1,446 @@
+/* ========================================
+   Estilos específicos para Mi Perfil
+   ======================================== */
+
+/* ===== GRID DE PERFIL ===== */
+.perfil-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 900px;
+}
+
+/* ===== TARJETAS DE PERFIL ===== */
+.perfil-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.perfil-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.perfil-card-header {
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perfil-card-header i {
+    font-size: 1.2rem;
+}
+
+.perfil-card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+}
+
+.perfil-card-body {
+    padding: 20px 24px;
+}
+
+/* ===== HERO (Avatar + Nombre) ===== */
+.perfil-card-hero {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.perfil-card-hero:hover {
+    box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+}
+
+.perfil-hero-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+}
+
+.perfil-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
+}
+
+.perfil-hero-info h3 {
+    margin: 0 0 4px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.perfil-hero-info p {
+    margin: 0 0 8px;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.perfil-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    backdrop-filter: blur(5px);
+}
+
+/* ===== CAMPOS DEL FORMULARIO ===== */
+.perfil-field {
+    margin-bottom: 18px;
+}
+
+.perfil-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.perfil-label i {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.perfil-field .form-control {
+    border-radius: 10px;
+    border: 1.5px solid #e9ecef;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #333;
+    background-color: #fafbfc;
+    transition: all 0.2s ease;
+}
+
+.perfil-field .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    background-color: white;
+    outline: none;
+}
+
+.perfil-field .form-control:disabled,
+.perfil-field .form-control[readonly] {
+    background-color: #f1f3f5;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.perfil-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #adb5bd;
+    margin-top: 4px;
+}
+
+/* ===== BANCO CONECTADO ===== */
+.bank-card {
+    border: 1.5px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bank-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #f8f9fa;
+}
+
+.bank-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.bank-icon.connected {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.bank-info {
+    flex: 1;
+}
+
+.bank-info strong {
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.bank-info span {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.bank-status-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bank-status-badge.connected {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.bank-card-body {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.bank-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bank-detail label {
+    font-size: 0.78rem;
+    color: #adb5bd;
+}
+
+.bank-detail span {
+    font-size: 0.82rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.bank-card-footer {
+    padding: 14px 16px;
+}
+
+/* ===== BANCO VACÍO ===== */
+.bank-empty {
+    text-align: center;
+    padding: 24px 16px;
+}
+
+.bank-empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.8rem;
+    color: #adb5bd;
+}
+
+.bank-empty h6 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.bank-empty p {
+    font-size: 0.82rem;
+    color: #adb5bd;
+    margin-bottom: 16px;
+}
+
+/* ===== BOTONES ===== */
+.perfil-btn-save {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.perfil-btn-save:hover:not(:disabled) {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.perfil-btn-save:disabled {
+    background: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+.perfil-btn-connect {
+    background: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.perfil-btn-connect:hover {
+    background: #218838;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.perfil-btn-danger-outline {
+    background: white;
+    color: #dc3545;
+    border: 1.5px solid #dc3545;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.perfil-btn-danger-outline:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.perfil-btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.perfil-btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* ===== ZONA DE PELIGRO ===== */
+.perfil-card-danger {
+    border: 1.5px solid #ffe0e0;
+}
+
+.perfil-card-danger .perfil-card-header h5 {
+    color: #dc3545;
+}
+
+.danger-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #fff5f5;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.danger-warning i {
+    font-size: 1.2rem;
+    color: #dc3545;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.danger-warning p {
+    font-size: 0.82rem;
+    color: #666;
+    margin: 0;
+}
+
+.danger-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.danger-list li {
+    font-size: 0.82rem;
+    color: #6c757d;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.danger-list li i {
+    color: #dc3545;
+    font-size: 0.75rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .perfil-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .perfil-hero-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+    
+    .perfil-card-body {
+        padding: 16px;
+    }
+    
+    .perfil-card-header {
+        padding: 16px 16px 0;
+    }
+    
+    .bank-card-header {
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .perfil-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+    }
+}
