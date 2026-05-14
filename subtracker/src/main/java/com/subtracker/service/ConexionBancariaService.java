@@ -105,6 +105,7 @@ public class ConexionBancariaService {
 					log.info("[ASYNC] Iniciando procesamiento de suscripciones para cuenta: {}", accountUid);
 					List<Suscripcion> nuevas = suscripcionService.procesarSuscripcionesDesdeApi(accountUid, usuario,
 							cuentaFinal);
+					suscripcionService.notificarActualizacion(usuario.getId());
 					log.info("[ASYNC] Procesadas {} nuevas suscripciones", nuevas.size());
 				} catch (Exception e) {
 					log.error("[ASYNC] Error procesando suscripciones para cuenta {}: {}", accountUid, e.getMessage(),

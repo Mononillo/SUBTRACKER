@@ -136,6 +136,7 @@ public class AuthController {
 				log.info("[ASYNC] Procesando suscripciones desde API para usuario: {}", usuario.getCorreo());
 				List<Suscripcion> nuevas = suscripcionService.procesarSuscripcionesDesdeApi(accountUid, usuario,
 						cuentaFinal);
+				suscripcionService.notificarActualizacion(usuario.getId());
 
 				log.info("[ASYNC] Procesadas {} nuevas suscripciones", nuevas.size());
 			} catch (Exception e) {

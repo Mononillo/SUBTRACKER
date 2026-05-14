@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.subtracker.model.Suscripcion;
@@ -38,6 +40,16 @@ public class SuscripcionesController {
 		this.suscripcionService = suscripcionService;
 		this.usuarioService = usuarioService;
 		this.transaccionService = transaccionService;
+	}
+	
+	@GetMapping("/api/suscripciones/stream")
+	@ResponseBody
+	public SseEmitter stream(@AuthenticationPrincipal UserDetails userDetails) {
+	    Optional<Usuario> usuarioOpt = usuarioService.buscarUsuarioPorCorreo(userDetails.getUsername());
+	    if (usuarioOpt.isPresent()) {
+	        return suscripcionService.crearEmitter(usuarioOpt.get().getId());
+	    }
+	    return new SseEmitter();
 	}
 
 	// ========================================

@@ -16,11 +16,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.subtracker.config.BankingProperties;
 import com.subtracker.dto.SuscripcionDTO;
@@ -72,6 +74,27 @@ public class SuscripcionService {
 	}
 
 	// ===== CONSULTAS BÁSICAS =====
+	
+	private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+
+	public SseEmitter crearEmitter(Long usuarioId) {
+	    SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+	    emitters.put(usuarioId, emitter);
+	    emitter.onCompletion(() -> emitters.remove(usuarioId));
+	    emitter.onTimeout(() -> emitters.remove(usuarioId));
+	    return emitter;
+	}
+
+	public void notificarActualizacion(Long usuarioId) {
+	    SseEmitter emitter = emitters.get(usuarioId);
+	    if (emitter != null) {
+	        try {
+	            emitter.send(SseEmitter.event().data("actualizado"));
+	        } catch (Exception e) {
+	            emitters.remove(usuarioId);
+	        }
+	    }
+	}
 
 	public Long obtenerNumeroSuscripcionesActivas(Long usuarioId) {
 		Objects.requireNonNull(usuarioId, "El id de usuario no puede ser nulo");
