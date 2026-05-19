@@ -60,7 +60,7 @@ subtracker/
 
 
 
-### 2. application.properties
+### application.properties
 
 Usar los valores ya establecidos, únicamente reemplazar la información relacionada con la Base de datos por la información local
 
