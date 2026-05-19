@@ -1,0 +1,247 @@
+/* ========================================
+   Estilos para Editar Suscripción
+   ======================================== */
+
+/* ===== CONTENEDOR DEL FORMULARIO ===== */
+.form-container {
+    max-width: 700px;
+    margin: 0 auto;  /* ← Centrar horizontalmente */
+}
+
+/* ===== TARJETA DEL FORMULARIO ===== */
+.form-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.form-card-header {
+    padding: 24px 28px 0;
+}
+
+.form-card-header h4 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-card-header p {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin: 4px 0 0;
+}
+
+.form-card-body {
+    padding: 24px 28px;
+}
+
+/* ===== CAMPOS DEL FORMULARIO ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.required-field::after {
+    content: '*';
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1.5px solid #e9ecef;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #333;
+    background-color: #fafbfc;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    background-color: white;
+    outline: none;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #f1f3f5;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-select {
+    border-radius: 10px;
+    border: 1.5px solid #e9ecef;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #333;
+    background-color: #fafbfc;
+}
+
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.form-text {
+    font-size: 0.75rem;
+    color: #adb5bd;
+    margin-top: 4px;
+}
+
+.input-group-text {
+    background-color: #f1f3f5;
+    border: 1.5px solid #e9ecef;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.input-group .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+}
+
+/* ===== FILA DE 2 COLUMNAS ===== */
+.row-custom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ===== INFO ADICIONAL ===== */
+.info-adicional {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.info-item i {
+    font-size: 0.9rem;
+    color: #adb5bd;
+    width: 20px;
+    text-align: center;
+}
+
+.info-item strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* ===== BOTONES ===== */
+.acciones-form {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+
+.btn-secondary-custom {
+    background: white;
+    color: #6c757d;
+    border: 1.5px solid #e9ecef;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-custom:hover {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #495057;
+}
+
+.btn-submit {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+/* ===== TARJETA DE CONSEJO ===== */
+.form-card-tip {
+    border: 1.5px solid #fff3cd;
+}
+
+.form-card-tip .form-card-body {
+    background: #fffbeb;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .form-container {
+        max-width: 100%;
+        margin: 0;  /* Sin margen en móvil */
+    }
+    
+    .form-card-header {
+        padding: 20px 20px 0;
+    }
+    
+    .form-card-body {
+        padding: 20px;
+    }
+    
+    .row-custom {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .acciones-form {
+        flex-direction: column;
+    }
+    
+    .btn-secondary-custom,
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
