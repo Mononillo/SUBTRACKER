@@ -26,6 +26,7 @@ public class EnableBankingRestClient {
 		this.jwtGenerator = jwtGenerator;
 		this.bankingProperties = bankingProperties;
 		this.objectMapper = new ObjectMapper();
+		// Cliente HTTP/2 con timeout de 30 segundos
 		this.httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
 				.connectTimeout(java.time.Duration.ofSeconds(30)).build();
 	}
@@ -34,24 +35,19 @@ public class EnableBankingRestClient {
 		return jwtGenerator.generarJWT();
 	}
 
+	// Metodo reutilizable para cualquier llamada POST a la API de Enable Banking
 	private JsonNode ejecutarPost(String endpoint, Object body) throws Exception {
 		String url = bankingProperties.getBaseUrl() + endpoint;
-		String jwt = generarJwtApp();
+		String jwt = generarJwtApp(); // Genera el JWT firmado con la clave privada RSA
 		String jsonBody = objectMapper.writeValueAsString(body);
 
-		System.out.println("POST: " + url);
-		System.out.println("JWT: " + jwt.substring(0, Math.min(50, jwt.length())) + "...");
-		System.out.println("Body enviado: " + jsonBody);
-
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Authorization", "Bearer " + jwt)
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Authorization", "Bearer " + jwt) // Autenticacion
+																														// mediante
+																														// JWT
 				.header("Content-Type", "application/json").header("Accept", "application/json")
 				.POST(HttpRequest.BodyPublishers.ofString(jsonBody)).build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-		System.out.println("Status code: " + response.statusCode());
-		System.out.println("Respuesta completa:");
-		System.out.println(response.body());
 
 		if (response.statusCode() >= 400) {
 			throw new RuntimeException("Error HTTP " + response.statusCode() + ": " + response.body());
@@ -65,10 +61,11 @@ public class EnableBankingRestClient {
 		access.put("balances", true);
 		access.put("transactions", true);
 
+		// El acceso expira en 179 dias (limite de Enable Banking)
 		String validUntil = java.time.Instant.now().plus(java.time.Duration.ofDays(179)).toString();
-
 		access.put("valid_until", validUntil);
 
+		// Banco simulado para entorno de pruebas
 		Map<String, String> aspsp = new HashMap<>();
 		aspsp.put("country", "ES");
 		aspsp.put("name", "Mock ASPSP");
@@ -77,39 +74,20 @@ public class EnableBankingRestClient {
 		body.put("access", access);
 		body.put("aspsp", aspsp);
 		body.put("psu_type", "personal");
-		body.put("redirect_url", redirectUri);
-		body.put("state", state);
-
-		System.out.println("Fecha enviada: " + validUntil);
-		System.out.println("Body completo: " + new ObjectMapper().writeValueAsString(body));
+		body.put("redirect_url", redirectUri); // URL a la que el banco redirigira tras la autorizacion
+		body.put("state", state); // Token para verificar el callback
 
 		return ejecutarPost("/auth", body);
 	}
 
-	/**
-	 * Obtener token de acceso (canjear código)
-	 */
+	// Canjea el codigo de autorizacion por un token de acceso
 	public JsonNode obtenerToken(String code) throws Exception {
-		System.out.println("EJECUTANDO obtenerToken con code: " + code);
-
 		Map<String, String> body = new HashMap<>();
 		body.put("code", code);
-
-		try {
-			JsonNode response = ejecutarPost("/sessions", body);
-			System.out.println("RESPUESTA COMPLETA DE /sessions:");
-			System.out.println(response.toPrettyString()); //  Más legible
-			return response;
-		} catch (Exception e) {
-			System.err.println("Error en obtenerToken: " + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		}
+		return ejecutarPost("/sessions", body);
 	}
 
-	/**
-	 * Obtener cuentas del usuario
-	 */
+	// Obtiene las cuentas bancarias usando el token de acceso del usuario (no el JWT de la app)
 	public JsonNode obtenerCuentas(String accessToken) throws Exception {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(bankingProperties.getBaseUrl() + "/accounts"))
 				.header("Authorization", "Bearer " + accessToken).header("Accept", "application/json").GET().build();

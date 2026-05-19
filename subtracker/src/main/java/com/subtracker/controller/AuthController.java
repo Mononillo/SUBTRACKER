@@ -59,7 +59,6 @@ public class AuthController {
 	}
 
 	// ===== REGISTRO =====
-
 	@GetMapping("/register")
 	public String mostrarFormularioRegistro(Model model) {
 		model.addAttribute("usuario", new RegistroDTO());
@@ -67,30 +66,34 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public String registrar(@Valid @ModelAttribute("usuario") RegistroDTO registroDTO, BindingResult result,
+	public String registrar(@Valid @ModelAttribute("usuario") RegistroDTO registroDTO, // Valida el DTO con las
+																						// anotaciones de RegistroDTO
+			BindingResult result, // Recoge los errores de validacion
 			Model model, HttpServletRequest request) {
 
 		if (result.hasErrors()) {
-			return "auth/register";
+			return "auth/register"; // Devuelve el formulario con los errores
 		}
 
 		try {
 			usuarioService.registrarUsuario(registroDTO);
 
+			// Autentica al usuario automaticamente tras el registro para no obligarle a
+			// hacer login
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 					registroDTO.getCorreo(), registroDTO.getPassword());
 
 			Authentication authentication = authenticationManager.authenticate(authToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+			SecurityContextHolder.getContext().setAuthentication(authentication); // Establece la sesion de seguridad
 
+			// Persiste el contexto de seguridad en la sesion HTTP
 			HttpSession session = request.getSession(true);
 			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
 			return "redirect:/auth/banking-auth";
 
 		} catch (RuntimeException e) {
-			log.warn("Error en registro para correo {}: {}", registroDTO.getCorreo(), e.getMessage());
-			model.addAttribute("error", e.getMessage());
+			model.addAttribute("error", e.getMessage()); // Pasa el error al modelo para mostrarlo en la vista
 			return "auth/register";
 		}
 	}
@@ -98,9 +101,10 @@ public class AuthController {
 	// ===== BANKING AUTH =====
 
 	@GetMapping("/banking-auth")
-	public String mostrarAutorizacionBancaria(Model model, @AuthenticationPrincipal UserDetails userDetails,
-			HttpSession session) {
+	public String mostrarAutorizacionBancaria(Model model,@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
+		//userDetails inyecta el usuario autenticado de la sesión
 
+		// Si no hay sesion activa redirige al login
 		if (userDetails == null || userDetails.getUsername() == null) {
 			return "redirect:/auth/login";
 		}
@@ -112,39 +116,35 @@ public class AuthController {
 
 		Usuario usuario = usuarioOpt.get();
 
+		// Si no tiene banco conectado muestra la pantalla de conexion bancaria
 		if (!conexionBancariaService.tieneConexionActiva(usuario)) {
 			return "auth/banking-auth";
 		}
 
 		Optional<ConexionBancaria> conexionOpt = conexionBancariaService.obtenerConexionPorUsuario(usuario);
 		if (conexionOpt.isEmpty()) {
-			log.warn("tieneConexionActiva=true pero no se encontró conexión para usuario: {}", usuario.getCorreo());
 			return "auth/banking-auth";
 		}
 
 		CuentaBancaria cuenta = cuentaBancariaService.obtenerCuentaPorUsuarioId(usuario.getId());
 		if (cuenta == null) {
-			log.warn("No se encontró cuenta bancaria para usuario: {}", usuario.getCorreo());
 			return "auth/banking-auth";
 		}
 
 		final String accountUid = cuenta.getUid();
 		final CuentaBancaria cuentaFinal = cuenta;
 
+		// Lanza el procesamiento de transacciones en un hilo separado para no bloquear la respuesta
 		executor.submit(() -> {
 			try {
-				log.info("[ASYNC] Procesando suscripciones desde API para usuario: {}", usuario.getCorreo());
 				List<Suscripcion> nuevas = suscripcionService.procesarSuscripcionesDesdeApi(accountUid, usuario,
 						cuentaFinal);
-				suscripcionService.notificarActualizacion(usuario.getId());
-
-				log.info("[ASYNC] Procesadas {} nuevas suscripciones", nuevas.size());
+				suscripcionService.notificarActualizacion(usuario.getId()); // Avisa al frontend via SSE
 			} catch (Exception e) {
 				log.error("[ASYNC] Error procesando suscripciones para usuario {}: {}", usuario.getCorreo(),
 						e.getMessage(), e);
 			}
 		});
-
 		return "redirect:/dashboard";
 	}
 }

@@ -1,6 +1,7 @@
 package com.subtracker.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -10,8 +11,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.subtracker.model.Notificacion;
 import com.subtracker.model.Suscripcion;
 import com.subtracker.model.Usuario;
+import com.subtracker.repository.NotificacionRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +24,7 @@ public class NotificacionService {
 
 	private final JavaMailSender mailSender;
 	private final SuscripcionService suscripcionService;
+	private final NotificacionRepository notificacionRepository;
 
 	private int diasAntelacion = 5;
 
@@ -28,9 +32,10 @@ public class NotificacionService {
 	private String fromEmail;
 
 	public NotificacionService(JavaMailSender mailSender, SuscripcionService suscripcionService,
-			UsuarioService usuarioService) {
+			UsuarioService usuarioService, NotificacionRepository notificacionRepository) {
 		this.mailSender = mailSender;
 		this.suscripcionService = suscripcionService;
+		this.notificacionRepository = notificacionRepository;
 	}
 
 	@Scheduled(cron = "0 0 9 * * *")
@@ -56,6 +61,12 @@ public class NotificacionService {
 	private void enviarEmailPagoProximo(Suscripcion suscripcion) {
 		Usuario usuario = suscripcion.getUsuario();
 
+		Notificacion notificacion = Notificacion.builder().fechaCreacion(LocalDateTime.now())
+				.fechaNotificacion(LocalDate.now().plusDays(diasAntelacion)).suscripcion(suscripcion)
+				.mensaje(crearContenidoEmail(suscripcion, usuario)).usuario(usuario).enviada(true).build();
+
+		insertarNotificacion(notificacion);
+
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(fromEmail);
 		message.setTo(usuario.getCorreo());
@@ -75,4 +86,11 @@ public class NotificacionService {
 				+ s.getProximaRenovacion().format(formatter) + "\n" + "  Frecuencia: " + s.getFrecuencia() + "\n\n"
 				+ "Saludos,\nSubtracker";
 	}
+
+	private void insertarNotificacion(Notificacion notificacion) {
+
+		notificacionRepository.save(notificacion);
+
+	}
+
 }

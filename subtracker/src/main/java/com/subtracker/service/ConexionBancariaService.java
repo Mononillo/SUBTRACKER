@@ -120,35 +120,39 @@ public class ConexionBancariaService {
 	// ===== PROCESAR CUENTA BANCARIA =====
 
 	private CuentaBancaria procesarCuentaBancaria(JsonNode tokenResponse, ConexionBancaria conexion) {
+
+		// Si la respuesta no contiene cuentas no se puede continuar
 		if (!tokenResponse.has("accounts") || !tokenResponse.get("accounts").isArray()
 				|| tokenResponse.get("accounts").size() == 0) {
-			log.warn("No se encontraron cuentas en la respuesta del token");
 			return null;
 		}
 
+		// Se toma solo la primera cuenta de la lista
 		JsonNode cuentaNode = tokenResponse.get("accounts").get(0);
 		String uid = cuentaNode.get("uid").asString();
+
+		// Extrae el nombre del banco o usa un valor por defecto si no viene en la
+		// respuesta
 		String nombreBanco = tokenResponse.has("aspsp") && tokenResponse.get("aspsp").has("name")
 				? tokenResponse.get("aspsp").get("name").asString()
 				: "Mock ASPSP";
 
 		Optional<CuentaBancaria> cuentaExistente = cuentaBancariaRepository.findByUid(uid);
 
+		// Si la cuenta ya existe en BD solo actualiza el nombre del banco
 		if (cuentaExistente.isPresent()) {
 			CuentaBancaria cuenta = cuentaExistente.get();
-			log.info("Cuenta bancaria existente encontrada con UID: {}", uid);
 			cuenta.setNombreBanco(nombreBanco);
 			return cuentaBancariaRepository.save(cuenta);
 		}
 
+		// Si no existe la crea y la asocia al usuario de la conexion
 		CuentaBancaria nueva = new CuentaBancaria();
 		nueva.setUsuario(conexion.getUsuario());
 		nueva.setUid(uid);
 		nueva.setNombreBanco(nombreBanco);
 		nueva.setFechaCreacion(LocalDateTime.now());
-		nueva = cuentaBancariaRepository.save(nueva);
-		log.info("Nueva cuenta bancaria guardada con ID: {}, UID: {}", nueva.getId(), uid);
-		return nueva;
+		return cuentaBancariaRepository.save(nueva);
 	}
 
 	// ===== CONSULTAS =====

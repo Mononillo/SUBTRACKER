@@ -17,7 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
@@ -31,53 +31,38 @@ public class UsuarioService {
 		if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
 			throw new RuntimeException("El correo ya está registrado");
 		}
-
 		Usuario usuario = Usuario.builder().correo(dto.getCorreo())
-				.hashContrasena(passwordEncoder.encode(dto.getPassword())).nombre(dto.getNombre()).build();
+				.hashContrasena(passwordEncoder.encode(dto.getPassword())) // Hashea la contraseña con BCrypt
+				.nombre(dto.getNombre()).build();
 
 		return usuarioRepository.save(usuario);
 	}
 
 	public Long buscarUsuarioIdPorCorreo(String correo) {
-
 		if (correo == null) {
 			throw new RuntimeException("El correo es nulo");
 		}
-
 		return usuarioRepository.findByCorreo(correo).get().getId();
-
 	}
 
 	public Optional<Usuario> buscarUsuarioPorCorreo(String correo) {
-
 		return usuarioRepository.findByCorreo(correo);
-
 	}
 
-	@Transactional
+	@Transactional // Si falla cualquier paso, se revierte todo
 	public void eliminarUsuario(Long usuarioId) {
-
 		Usuario usuario = usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-		// 1. PRIMERO: Eliminar relaciones suscripción-transacción
+		// El orden respeta las claves foraneas: de hijo a padre
 		suscripcionTransaccionRepository.deleteBySuscripcionUsuarioId(usuarioId);
-
-		// 2. SEGUNDO: Eliminar transacciones
 		transaccionRepository.deleteByCuentaBancariaUsuarioId(usuarioId);
-
-		// 3. TERCERO: Eliminar cuentas bancarias
 		cuentaBancariaRepository.deleteByUsuarioId(usuarioId);
-
-		// 4. CUARTO: Eliminar suscripciones
 		suscripcionRepository.deleteByUsuarioId(usuarioId);
-
-		// 5. QUINTO: Finalmente eliminar el usuario
 		usuarioRepository.delete(usuario);
 	}
 
 	public void guardar(Usuario usuario) {
 		usuarioRepository.save(usuario);
 	}
-
 }

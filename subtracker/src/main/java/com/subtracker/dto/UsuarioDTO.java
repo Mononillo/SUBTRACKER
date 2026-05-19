@@ -12,11 +12,16 @@ import lombok.Builder;
  * contraseña.
  */
 @Builder
-public record UsuarioDTO(Long id,
+public record UsuarioDTO(
+        Long id,
 
-		@NotBlank(message = "El correo es obligatorio") @Email(message = "Formato de correo inválido") String correo,
+        @NotBlank(message = "El correo es obligatorio")
+        @Email(message = "Formato de correo inválido") // Valida que tenga formato de correo
+        String correo,
 
-		@NotBlank(message = "El nombre es obligatorio") @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres") String nombre,
+        @NotBlank(message = "El nombre es obligatorio")
+        @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres") // Limita la longitud
+        String nombre,
 
-		LocalDateTime fechaRegistro) {
+        LocalDateTime fechaRegistro) {
 }
