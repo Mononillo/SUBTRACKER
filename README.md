@@ -25,7 +25,8 @@ Aplicación web para gestionar y detectar automáticamente suscripciones de pago
 - **Java 21** o superior
 - **Maven 3.9+**
 - **MySQL 8+** accesible en red
-
+- Para poder utilizar la aplicación con todas sus caractrerísticas es necesario haber iniciado sesión en https://enablebanking.com,
+- haber configurado el perfil y añadido datos de prueba en formato json 
 ---
 
 ## Estructura del proyecto
